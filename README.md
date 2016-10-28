@@ -3,8 +3,8 @@
 ###使用：<br>
 * 0.添加masonry，添加sdWebImage<br>
 * 1.设置位置<br>
-* 2.设置图片数组（支持本地图片名称数组和网络图片url数组）<br>
-* 3.设置占位图片：placeholderImageName<br>
+* 2.设置占位图片(可不设)：placeholderImageName<br>
+* 3.设置图片数组（支持本地图片名称数组和网络图片url数组）<br>
 
 <br><br>
 ###添加功能
