@@ -17,7 +17,7 @@
 <br>
 <br>
 ###示例代码<br><br><br>
-@interface ViewController ()<XBADCollectionViewDelegate><br>
+@interface ViewController ()\<XBADCollectionViewDelegate><br>
 <br>
 @end<br>
 <br>
