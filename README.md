@@ -17,26 +17,29 @@
 <br>
 <br>
 ###示例代码<br><br><br>
-@interface ViewController ()\<XBADCollectionViewDelegate><br>
-<br>
-@end<br>
-<br>
-@implementation ViewController<br>
-<br>
-\- (void)viewDidLoad {<br>
-[super viewDidLoad];<br>
-<br>
-XBADCollectionView *adV=[XBADCollectionView new];<br>
-[self.view addSubview:adV];<br>
-adV.frame=CGRectMake(0, 80, 320, 160);<br>
-<br>
-adV.placeholderImageName=@"placeholderImage";<br>
-adV.imageUrlArr=@[@"https://ss2.baidu.com/6ONYsjip0QIZ8tyhnq/it/u=1269384707,518933899&fm=80&w=179&h=119&img.JPEG",@"https://ss2.baidu.com/6ONYsjip0QIZ8tyhnq/it/u=2066656253,3120099901&fm=80&w=179&h=119&img.JPEG"];<br>
-adV.delegate=self;<br>
-}<br>
-<br>
-\-(void)xbADCollectionView:(XBADCollectionView *)xbADCollectionView clickAtIndex:(NSInteger)index<br>
-{<br>
-NSLog(@"%zd",index);<br>
-}<br>
-@end<br>
+<pre>
+@interface ViewController ()\<XBADCollectionViewDelegate>
+
+@end
+
+@implementation ViewController
+
+- (void)viewDidLoad {
+[super viewDidLoad];
+
+XBADCollectionView *adV=[XBADCollectionView new];
+[self.view addSubview:adV];
+adV.frame=CGRectMake(0, 80, 320, 160);
+
+adV.placeholderImageName=@"placeholderImage";
+adV.imageUrlArr=@[@"https://ss2.baidu.com/6ONYsjip0QIZ8tyhnq/it/u=1269384707,518933899&fm=80&w=179&h=119&img.JPEG",@"https://ss2.baidu.com/6ONYsjip0QIZ8tyhnq/it/u=2066656253,3120099901&fm=80&w=179&h=119&img.JPEG"];
+adV.delegate=self;
+}
+
+-(void)xbADCollectionView:(XBADCollectionView *)xbADCollectionView clickAtIndex:(NSInteger)index
+{
+NSLog(@"%zd",index);
+}
+@end
+</pre>
+
