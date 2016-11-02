@@ -17,11 +17,31 @@
 @property (nonatomic,strong) NSArray *imageSource;
 @property (nonatomic,assign) NSInteger index;
 @property (nonatomic,assign) BOOL notFirstRun;
+@property (nonatomic,assign) CGFloat draggingStartTime;
+@property (nonatomic,assign) CGFloat draggingEndTime;
 @end
 
 @implementation XBADCollectionView
 
 #pragma mark - 初始化
+-(instancetype)initWithCoder:(NSCoder *)aDecoder
+{
+    if (self=[super initWithCoder:aDecoder])
+    {
+        [self initParams];
+        [self setupSubviews];
+    }
+    return self;
+}
+-(instancetype)initWithFrame:(CGRect)frame
+{
+    if (self=[super initWithFrame:frame])
+    {
+        [self initParams];
+        [self setupSubviews];
+    }
+    return self;
+}
 -(instancetype)init
 {
     if (self=[super init])
@@ -38,19 +58,19 @@
     
     //注册监听
     //注册监听 监听APP重后台回到前台
-//    [NotificationCenter addObserver:self
-//                           selector:@selector(appBecomeActiveNotification:)
-//                               name:UIApplicationDidBecomeActiveNotification object:nil];
-//    
-//    //注册监听
-//    [NotificationCenter addObserver:self
-//                           selector:@selector(appEnterBackgroundNotification:)
-//                               name:UIApplicationDidEnterBackgroundNotification object:nil];
+    //    [NotificationCenter addObserver:self
+    //                           selector:@selector(appBecomeActiveNotification:)
+    //                               name:UIApplicationDidBecomeActiveNotification object:nil];
+    //
+    //    //注册监听
+    //    [NotificationCenter addObserver:self
+    //                           selector:@selector(appEnterBackgroundNotification:)
+    //                               name:UIApplicationDidEnterBackgroundNotification object:nil];
 }
 -(void)dealloc
 {
     [self removeTime];
-    [NotificationCenter removeObserver:self];
+    //    [NotificationCenter removeObserver:self];
 }
 -(void)setupSubviews
 {
@@ -149,14 +169,34 @@
 #pragma mark - UIScrollView代理方法
 -(void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
 {
+    [self removeTime];
+    self.draggingStartTime=[NSDate date].timeIntervalSince1970;
+    //上一次结束拖动的时间到此次拖动的时间间隔小于0.2秒
+    if (self.draggingStartTime-self.draggingEndTime<0.5)
+    {
+        [self addTime];
+        return;
+    }
     //滚动结束前不可交互
     scrollView.userInteractionEnabled=NO;
     
-    [self removeTime];
+    
+}
+
+-(void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
+{
+    self.draggingEndTime=[NSDate date].timeIntervalSince1970;
+    [self fixIndex];
+    //    [self feint];
 }
 -(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
     [self addTime];
+    //    self.draggingEndTime=[NSDate date].timeIntervalSince1970;
+    //    if (self.draggingEndTime-self.draggingStartTime<0.2)
+    //    {
+    //        return;
+    //    }
     NSIndexPath *visiablePath= [[self.xbCollectionView indexPathsForVisibleItems] firstObject];
     NSInteger index=visiablePath.item;
     //在本方法中,拖动结束后,self.index只可能为1或者self.imageSource.count-1
@@ -190,8 +230,8 @@
 #pragma mark - 其他方法
 -(void)addTime
 {
-    return;
-    if (self.imageSource.count>3)
+    //    return;
+    if (self.imageSource.count>3 && self.time==nil)
     {
         self.time = [NSTimer scheduledTimerWithTimeInterval:4.0 target:self selector:@selector(nextAdv:) userInfo:nil repeats:YES];
         [[NSRunLoop currentRunLoop] addTimer:self.time forMode:NSRunLoopCommonModes];
@@ -199,7 +239,7 @@
 }
 -(void)removeTime
 {
-    return;
+    //    return;
     [self.time invalidate];
     self.time = nil;
 }
