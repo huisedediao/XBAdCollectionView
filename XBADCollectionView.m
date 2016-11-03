@@ -336,6 +336,8 @@
     //延迟刷新,等collectionView自动布局完成,保证item的size正确
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.03 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [self.xbCollectionView reloadData];
+        [self fixIndex];
+        [self feint];
         [self removeTime];
         [self addTime];
     });
