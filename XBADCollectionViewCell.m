@@ -18,10 +18,6 @@
 
 @implementation XBADCollectionViewCell
 
-- (void)awakeFromNib {
-    // Initialization code
-}
-
 
 -(void)setImageUrl:(NSString *)imageUrl
 {

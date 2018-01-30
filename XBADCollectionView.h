@@ -47,7 +47,7 @@
 /**
  *  子类继承方法,重写需要调用[super setNeedParamsWithImageIndex:index];
  *
- *  @param index:代表当前显示的是第几张图片
+ *  index:代表当前显示的是第几张图片
  */
 //滚动结束后(不论手动还是自动)需要调用的方法
 -(void)setNeedParamsWithImageIndex:(NSInteger)index;

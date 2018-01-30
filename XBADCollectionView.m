@@ -58,19 +58,19 @@
     
     //注册监听
     //注册监听 监听APP重后台回到前台
-    //    [NotificationCenter addObserver:self
-    //                           selector:@selector(appBecomeActiveNotification:)
-    //                               name:UIApplicationDidBecomeActiveNotification object:nil];
-    //
-    //    //注册监听
-    //    [NotificationCenter addObserver:self
-    //                           selector:@selector(appEnterBackgroundNotification:)
-    //                               name:UIApplicationDidEnterBackgroundNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(appBecomeActiveNotification:)
+                                                 name:UIApplicationDidBecomeActiveNotification object:nil];
+    
+    //注册监听
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(appEnterBackgroundNotification:)
+                                                 name:UIApplicationDidEnterBackgroundNotification object:nil];
 }
 -(void)dealloc
 {
     [self removeTime];
-    //    [NotificationCenter removeObserver:self];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 -(void)setupSubviews
 {
@@ -117,16 +117,16 @@
 }
 
 
-//- (void)appEnterBackgroundNotification:(NSNotificationCenter *)note
-//{
-//    //APP推到后台注销掉定时器 避免在后台的时候APP闪退
-////    [self removeTime];
-//}
+- (void)appEnterBackgroundNotification:(NSNotificationCenter *)note
+{
+    //APP推到后台注销掉定时器 避免在后台的时候APP闪退
+    [self removeTime];
+}
 
-//- (void)appBecomeActiveNotification:(NSNotificationCenter *)note
-//{
-////    [self addTime];
-//}
+- (void)appBecomeActiveNotification:(NSNotificationCenter *)note
+{
+    [self addTime];
+}
 #pragma mark - collectionView代理方法
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
 {
@@ -180,6 +180,7 @@
     //滚动结束前不可交互
     scrollView.userInteractionEnabled=NO;
     
+    XBFlog(@"%zd",self.index);
     
 }
 
@@ -188,6 +189,7 @@
     self.draggingEndTime=[NSDate date].timeIntervalSince1970;
     [self fixIndex];
     //    [self feint];
+    XBFlog(@"%zd",self.index);
 }
 -(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
@@ -197,10 +199,21 @@
     //    {
     //        return;
     //    }
-    NSIndexPath *visiablePath= [[self.xbCollectionView indexPathsForVisibleItems] firstObject];
-    NSInteger index=visiablePath.item;
+    
+    /*这个方法获取的坐标不准确*/
+    //    NSIndexPath *visiablePath= [[self.xbCollectionView indexPathsForVisibleItems] firstObject];
+    //    NSInteger index=visiablePath.item;
+    
+    // 将collectionView在控制器view的中心点转化成collectionView上的坐标
+    CGPoint pInView = [self convertPoint:self.xbCollectionView.center toView:self.xbCollectionView];
+    // 获取这一点的indexPath
+    NSIndexPath *indexPathNow = [self.xbCollectionView indexPathForItemAtPoint:pInView];
+    
     //在本方法中,拖动结束后,self.index只可能为1或者self.imageSource.count-1
-    self.index =index;
+    self.index = indexPathNow.item;
+    
+    
+    XBFlog(@"index：%zd",indexPathNow);
     
     //滚动结束后(不论手动还是自动)需要调用的方法
     [self setNeedParamsWithImageIndex:self.index%(self.imageSource.count/2)];
@@ -211,6 +224,9 @@
     
     //滚动结束前不可交互,滚动完成后开启交互开关
     scrollView.userInteractionEnabled=YES;
+    
+    
+    XBFlog(@"self.index：%zd",self.index);
 }
 //自动滚动才跑这个方法
 -(void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView
@@ -224,13 +240,15 @@
     
     //滚动完成后开启交互开关
     scrollView.userInteractionEnabled=YES;
+    XBFlog(@"%zd",self.index);
 }
 
 
 #pragma mark - 其他方法
 -(void)addTime
 {
-    //    return;
+    
+    //        return;
     if (self.imageSource.count>3 && self.time==nil)
     {
         self.time = [NSTimer scheduledTimerWithTimeInterval:4.0 target:self selector:@selector(nextAdv:) userInfo:nil repeats:YES];
@@ -239,12 +257,14 @@
 }
 -(void)removeTime
 {
-    //    return;
+    
+    //        return;
     [self.time invalidate];
     self.time = nil;
 }
 -(void)nextAdv:(NSTimer *)time
 {
+    
     //不可交互
     self.xbCollectionView.userInteractionEnabled=NO;
     
@@ -260,6 +280,7 @@
 }
 -(void)setPageControlCurrentPage:(NSInteger)index
 {
+    
     self.xbPageControl.currentPage=index;
 }
 
@@ -267,12 +288,14 @@
 //滚动结束后(不论手动还是自动)需要调用的方法
 -(void)setNeedParamsWithImageIndex:(NSInteger)index
 {
+    
     [self setPageControlCurrentPage:index];
 }
 
 #pragma mark - 核心方法-欺骗视觉
 -(void)fixIndex
 {
+    
     if (self.index==self.imageSource.count-1)
     {
         self.index=self.imageSource.count/2-1;
@@ -284,6 +307,7 @@
 }
 -(void)feint
 {
+    
     if (self.imageSource.count>0)
     {
         [self.xbCollectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:self.index inSection:0] atScrollPosition:UICollectionViewScrollPositionNone animated:NO];
@@ -295,6 +319,7 @@
 #pragma mark - 方法重写
 -(void)setImageNameArr:(NSArray *)imageNameArr
 {
+    
     _imageNameArr=imageNameArr;
     
     if(self.imageUrlArr.count>0)
@@ -306,12 +331,14 @@
 }
 -(void)setImageUrlArr:(NSArray *)imageUrlArr
 {
+    
     _imageUrlArr=imageUrlArr;
     
     [self setCollectionViewOffset:imageUrlArr];
 }
 -(void)setCollectionViewOffset:(NSArray *)arr
 {
+    
     if (arr.count==0 || arr==nil)//如果数组为空或者为nil,啥也不做
     {
         return;
@@ -344,6 +371,7 @@
 }
 -(void)setPlaceholderImageName:(NSString *)placeholderImageName
 {
+    
     _placeholderImageName=placeholderImageName;
     self.imageNameArr=@[placeholderImageName];
 }
@@ -351,3 +379,4 @@
 
 
 @end
+
