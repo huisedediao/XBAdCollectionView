@@ -42,16 +42,7 @@
     }
     return self;
 }
--(instancetype)init
-{
-    if (self=[super init])
-    {
-        [self initParams];
-        [self setupSubviews];
-        
-    }
-    return self;
-}
+
 -(void)initParams
 {
     self.timeOfImageChange=4.0;
