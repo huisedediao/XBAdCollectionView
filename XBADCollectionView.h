@@ -41,6 +41,12 @@
 /** 代理 */
 @property (nonatomic,weak) id <XBADCollectionViewDelegate> delegate;
 
+///开始滚动
+- (void)starScroll;
+
+///停止滚动
+- (void)stopScroll;
+
 /** 手动调用,修复滚动中切换界面卡顿,切回以后卡住的问题 */
 -(void)feint;
 
@@ -49,6 +55,7 @@
  *
  *  index:代表当前显示的是第几张图片
  */
-//滚动结束后(不论手动还是自动)需要调用的方法
+///滚动结束后(不论手动还是自动)需要调用的方法
 -(void)setNeedParamsWithImageIndex:(NSInteger)index;
+
 @end

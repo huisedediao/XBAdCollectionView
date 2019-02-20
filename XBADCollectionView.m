@@ -236,6 +236,17 @@
 
 
 #pragma mark - 其他方法
+///开始滚动
+- (void)starScroll
+{
+    [self addTime];
+}
+
+///停止滚动
+- (void)stopScroll
+{
+    [self removeTime];
+}
 -(void)addTime
 {
     
